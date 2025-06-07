@@ -1,0 +1,50 @@
+<% content_for :header do %>
+<section class="hero is-warning">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        Browse new products
+      </h1>
+    </div>
+  </div>
+</section>
+<% end %>
+
+<div class="product-index-grid pt4">
+  <% @products.each do |product| %>
+
+    <div class="product border-light">
+      <div class="product-thumb">
+      <%= link_to image_tag(product.image_url(:thumb)), product %>
+      <% if product.condition? %>
+        <div class="condition">
+          <span class="tag is-dark"><%= product.condition %></span>
+        </div>
+      <% end %>
+      </div>
+
+
+    <div class="pa3">
+
+      <h3 class="fw7 f4 title"><%= link_to product.title, product %></h3>
+
+      <p class="has-text-gray fg pt1">Sold by: <%= product_author(product) %></p>
+
+      <p class="f3 fw6 has-text-right pt2 price"><%= number_to_currency(product.price) %></p>
+
+      <div class="product-actions pt2">
+        <%= form_with url: cart_add_item_path, method: :post, local: true do |form| %>
+          <%= form.hidden_field :product_id, value: product.id %>
+          <%= form.submit "Add to Cart", class: "button is-primary is-small" %>
+        <% end %>
+
+        <% if can_edit_product?(product) %>
+          <%= link_to 'Edit', edit_product_path(product), class: "button is-info is-small" %>
+          <%= link_to 'Delete', product, data: { confirm: "Are you sure ?" }, :method => :delete, class: "button is-danger is-small" %>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+  <% end %>
+</div>
