@@ -1,0 +1,95 @@
+<div class="level">
+  <div class="level-left">
+    <div class="level-item">
+      <h1 class="title">Shopping Cart</h1>
+    </div>
+  </div>
+  <div class="level-right">
+    <div class="level-item">
+      <% if @cart && !@cart.empty? %>
+        <%= link_to "Empty Cart", cart_path, method: :delete, 
+                    confirm: "Are you sure you want to empty your cart?", 
+                    class: "button is-danger" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<% if @cart && @cart_items.any? %>
+  <div class="box">
+    <% @cart_items.each do |item| %>
+      <div class="media">
+        <figure class="media-left">
+          <p class="image is-128x128">
+            <% if item.product.image.present? %>
+              <%= image_tag item.product.image.url(:thumb), alt: item.product.title %>
+            <% else %>
+              <img src="https://via.placeholder.com/128x128?text=No+Image" alt="<%= item.product.title %>">
+            <% end %>
+          </p>
+        </figure>
+        
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <strong><%= link_to item.product.title, product_path(item.product) %></strong>
+              <br>
+              <small>by <%= seller_name(item.product) %></small>
+              <br>
+              <strong>$<%= item.product.price %></strong> × <%= item.quantity %> = 
+              <strong>$<%= item.total_price %></strong>
+            </p>
+          </div>
+          
+          <div class="field is-grouped">
+            <%= form_with url: cart_remove_item_path, method: :delete, local: true do |form| %>
+              <%= form.hidden_field :product_id, value: item.product.id %>
+              <%= form.submit "Remove One", class: "button is-small is-warning" %>
+            <% end %>
+            
+            <%= form_with url: cart_remove_all_of_item_path, method: :delete, local: true do |form| %>
+              <%= form.hidden_field :product_id, value: item.product.id %>
+              <%= form.submit "Remove All", class: "button is-small is-danger" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      
+      <% unless item == @cart_items.last %>
+        <hr>
+      <% end %>
+    <% end %>
+  </div>
+  
+  <div class="box has-background-light">
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <h2 class="title is-4">Total: $<%= @cart.total_price %></h2>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <% if user_signed_in? %>
+            <%= link_to "Proceed to Checkout", checkout_path, class: "button is-primary is-large" %>
+          <% else %>
+            <%= link_to "Sign In to Checkout", new_user_session_path, class: "button is-primary is-large" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="has-text-centered">
+    <%= link_to "Continue Shopping", products_path, class: "button is-light" %>
+  </div>
+  
+<% else %>
+  <div class="has-text-centered">
+    <div class="box">
+      <h2 class="title is-4">Your cart is empty</h2>
+      <p class="subtitle">Add some products to get started!</p>
+      <%= link_to "Browse Products", products_path, class: "button is-primary is-large" %>
+    </div>
+  </div>
+<% end %>
