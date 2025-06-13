@@ -173,7 +173,7 @@ package-lock.json
 # Ignore rbenv files
 .ruby-version
 .ruby-gemset
-
+.bundle/
 # Ignore RVM files
 .rvmrc
 
@@ -185,8 +185,11 @@ package-lock.json
 .vagrant/
 
 # Ignore Docker files (if not needed in repo)
-# Dockerfile
-# docker-compose.yml
+# Docker
+.dockerignore
+.docker-compose.override.yml
+.docker-compose.override.yaml
+
 
 # Ignore test files and fixtures that shouldn't be committed
 /test/fixtures/files/*
@@ -240,3 +243,8 @@ config/local_env.yml
 config/settings.local.yml
 config/settings/*.local.yml
 config/environments/*.local.yml
+
+log/
+tmp/
+storage/
+vendor/
