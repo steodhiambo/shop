@@ -1,0 +1,36 @@
+<div class="has-text-centered">
+  <div class="box">
+    <div class="icon-text">
+      <span class="icon has-text-success is-large">
+        <i class="fas fa-check-circle fa-3x"></i>
+      </span>
+    </div>
+    
+    <h1 class="title is-2 has-text-success">Payment Successful!</h1>
+    <h2 class="subtitle">Thank you for your purchase</h2>
+    
+    <div class="content">
+      <p><strong>Payment ID:</strong> #<%= @payment.id %></p>
+      <p><strong>Amount:</strong> $<%= @payment.amount %></p>
+      <p><strong>Date:</strong> <%= @payment.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+    </div>
+    
+    <div class="buttons is-centered">
+      <%= link_to "Continue Shopping", products_path, class: "button is-primary is-large" %>
+      <%= link_to "View Payment Details", payment_path(@payment), class: "button is-info" %>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <h3 class="title is-4">What's Next?</h3>
+    <div class="content">
+      <ul>
+        <li>You will receive an email confirmation shortly</li>
+        <li>Sellers will be notified of your purchase</li>
+        <li>You can track your orders in your account</li>
+      </ul>
+    </div>
+  </div>
+</div>

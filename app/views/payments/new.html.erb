@@ -1,0 +1,182 @@
+<div class="columns is-centered">
+  <div class="column is-two-thirds">
+    <h1 class="title">Checkout</h1>
+    
+    <!-- Order Summary -->
+    <div class="box">
+      <h2 class="title is-4">Order Summary</h2>
+      
+      <% @cart.items_with_products.each do |item| %>
+        <div class="media">
+          <figure class="media-left">
+            <p class="image is-64x64">
+              <% if item.product.image.present? %>
+                <%= image_tag item.product.image.url(:thumb), alt: item.product.title %>
+              <% else %>
+                <img src="https://via.placeholder.com/64x64?text=No+Image" alt="<%= item.product.title %>">
+              <% end %>
+            </p>
+          </figure>
+          
+          <div class="media-content">
+            <div class="content">
+              <p>
+                <strong><%= item.product.title %></strong>
+                <br>
+                <small>by <%= seller_name(item.product) %></small>
+                <br>
+                $<%= item.product.price %> × <%= item.quantity %> = 
+                <strong>$<%= item.total_price %></strong>
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <% unless item == @cart.items_with_products.last %>
+          <hr>
+        <% end %>
+      <% end %>
+      
+      <div class="has-background-light p-4 mt-4">
+        <div class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <h3 class="title is-5">Total: $<%= @total_amount %></h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Payment Form -->
+    <div class="box">
+      <h2 class="title is-4">Payment Information</h2>
+      
+      <form id="payment-form">
+        <div class="field">
+          <label class="label">Card Information</label>
+          <div class="control">
+            <div id="card-element" class="input">
+              <!-- Stripe Elements will create form elements here -->
+            </div>
+          </div>
+          <div id="card-errors" role="alert" class="help is-danger"></div>
+        </div>
+        
+        <div class="field">
+          <div class="control">
+            <button id="submit-payment" class="button is-primary is-large is-fullwidth">
+              <span class="icon">
+                <i class="fas fa-lock"></i>
+              </span>
+              <span>Pay $<%= @total_amount %></span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <div class="has-text-centered">
+      <%= link_to "← Back to Cart", cart_path, class: "button is-light" %>
+    </div>
+  </div>
+</div>
+
+<!-- Stripe JavaScript -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  // Initialize Stripe
+  const stripe = Stripe('<%= Rails.application.credentials.stripe[:publishable_key] %>');
+  const elements = stripe.elements();
+  
+  // Create card element
+  const cardElement = elements.create('card', {
+    style: {
+      base: {
+        fontSize: '16px',
+        color: '#424770',
+        '::placeholder': {
+          color: '#aab7c4',
+        },
+      },
+    },
+  });
+  
+  cardElement.mount('#card-element');
+  
+  // Handle form submission
+  const form = document.getElementById('payment-form');
+  const submitButton = document.getElementById('submit-payment');
+  
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<span class="icon"><i class="fas fa-spinner fa-spin"></i></span><span>Processing...</span>';
+    
+    try {
+      // Create payment intent
+      const response = await fetch('<%= payments_path %>', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+        },
+        body: JSON.stringify({})
+      });
+      
+      const { client_secret, payment_id, error } = await response.json();
+      
+      if (error) {
+        throw new Error(error);
+      }
+      
+      // Confirm payment with Stripe
+      const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(client_secret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: '<%= current_user.name %>',
+            email: '<%= current_user.email %>'
+          }
+        }
+      });
+      
+      if (stripeError) {
+        throw new Error(stripeError.message);
+      }
+      
+      // Confirm payment on server
+      const confirmResponse = await fetch(`<%= payments_path %>/${payment_id}/confirm`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+        }
+      });
+      
+      const confirmResult = await confirmResponse.json();
+      
+      if (confirmResult.status === 'success') {
+        window.location.href = confirmResult.redirect_url;
+      } else {
+        throw new Error(confirmResult.message || 'Payment confirmation failed');
+      }
+      
+    } catch (error) {
+      document.getElementById('card-errors').textContent = error.message;
+      submitButton.disabled = false;
+      submitButton.innerHTML = '<span class="icon"><i class="fas fa-lock"></i></span><span>Pay $<%= @total_amount %></span>';
+    }
+  });
+  
+  // Handle real-time validation errors from the card Element
+  cardElement.on('change', ({error}) => {
+    const displayError = document.getElementById('card-errors');
+    if (error) {
+      displayError.textContent = error.message;
+    } else {
+      displayError.textContent = '';
+    }
+  });
+</script>
