@@ -64,21 +64,30 @@
         <p class="has-text-centered mb4">Sold by <%= @product.user&.name || "Unknown Seller" %></p>
 
         <div class="has-text-centered">
-          <%= form_with url: cart_add_item_path, method: :post, local: true do |form| %>
-            <%= form.hidden_field :product_id, value: @product.id %>
-            <%= form.submit "Add to Cart", class: "button is-primary is-large is-fullwidth mb3" %>
-          <% end %>
-
-          <% if can_edit_product?(@product) %>
+          <% if user_signed_in? && current_user == @product.user %>
+            <!-- Owner view - show ad management options -->
+            <div class="notification is-info is-light mb3">
+              <p class="has-text-weight-bold">This is your ad</p>
+            </div>
             <div class="field is-grouped">
               <div class="control is-expanded">
-                <%= link_to "Edit", edit_product_path(@product), class: "button is-info is-fullwidth" %>
+                <%= link_to "Edit Ad", edit_product_path(@product), class: "button is-info is-fullwidth" %>
               </div>
               <div class="control is-expanded">
-                <%= link_to "Delete", product_path(@product), method: :delete,
-                           confirm: "Are you sure?", class: "button is-danger is-fullwidth" %>
+                <%= link_to "Delete Ad", product_path(@product), method: :delete,
+                           confirm: "Are you sure you want to delete this ad?", class: "button is-danger is-fullwidth" %>
               </div>
             </div>
+            <div class="mt3">
+              <%= link_to "View All My Ads", my_ads_products_path, class: "button is-light is-fullwidth" %>
+            </div>
+          <% else %>
+            <!-- Buyer view - show purchase options -->
+            <%= form_with url: cart_add_item_path, method: :post, local: true do |form| %>
+              <%= form.hidden_field :product_id, value: @product.id %>
+              <%= form.submit "Add to Cart", class: "button is-primary is-large is-fullwidth mb3" %>
+            <% end %>
+            <p class="has-text-grey is-size-7">Contact seller for more details</p>
           <% end %>
         </div>
       </div>

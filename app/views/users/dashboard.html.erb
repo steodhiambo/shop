@@ -1,0 +1,81 @@
+<% content_for :header do %>
+<section class="hero is-primary">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        Welcome back, <%= @user.name %>!
+      </h1>
+      <h2 class="subtitle">
+        Manage your ads and account
+      </h2>
+    </div>
+  </div>
+</section>
+<% end %>
+
+<div class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-3">
+        <div class="box">
+          <h3 class="title is-5">Quick Stats</h3>
+          <div class="content">
+            <p><strong>Total Ads:</strong> <%= @total_ads %></p>
+            <p><strong>Member Since:</strong> <%= @user.created_at.strftime("%B %Y") %></p>
+          </div>
+          <div class="buttons">
+            <%= link_to "Create New Ad", new_product_path, class: "button is-primary" %>
+            <%= link_to "View All My Ads", my_ads_products_path, class: "button is-light" %>
+          </div>
+        </div>
+      </div>
+      
+      <div class="column is-9">
+        <div class="box">
+          <h3 class="title is-5">Your Recent Ads</h3>
+          
+          <% if @recent_ads.any? %>
+            <% @recent_ads.each do |product| %>
+              <div class="media">
+                <figure class="media-left">
+                  <p class="image is-64x64">
+                    <%= image_tag product.image_url(:thumb), alt: product.title %>
+                  </p>
+                </figure>
+                <div class="media-content">
+                  <div class="content">
+                    <p>
+                      <strong><%= link_to product.title, product_path(product) %></strong>
+                      <br>
+                      <strong>$<%= product.price %></strong> - <%= product.brand %> <%= product.model %>
+                      <br>
+                      <small>Created <%= time_ago_in_words(product.created_at) %> ago</small>
+                    </p>
+                  </div>
+                </div>
+                <div class="media-right">
+                  <div class="buttons">
+                    <%= link_to "Edit", edit_product_path(product), class: "button is-small is-info" %>
+                    <%= link_to "Delete", product_path(product), method: :delete,
+                               confirm: "Are you sure?", class: "button is-small is-danger" %>
+                  </div>
+                </div>
+              </div>
+              <hr>
+            <% end %>
+            
+            <div class="has-text-centered">
+              <%= link_to "View All My Ads (#{@total_ads})", my_ads_products_path, class: "button is-primary" %>
+            </div>
+          <% else %>
+            <div class="has-text-centered">
+              <p class="title is-4">No ads yet</p>
+              <p class="subtitle">Start selling by creating your first ad!</p>
+              <%= link_to "Create Your First Ad", new_product_path, class: "button is-primary is-large" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

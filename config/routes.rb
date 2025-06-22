@@ -3,9 +3,16 @@ Rails.application.routes.draw do
     registrations: 'registrations'
   }
 
+  # User dashboard
+  get 'dashboard', to: 'users#dashboard'
+
   root 'store#index'
 
-  resources :products
+  resources :products do
+    collection do
+      get :my_ads
+    end
+  end
 
   # Cart routes
   get 'cart', to: 'carts#show'
