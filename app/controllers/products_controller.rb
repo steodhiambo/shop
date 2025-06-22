@@ -12,6 +12,12 @@ class ProductsController < ApplicationController
     @products = Product.all.order("created_at desc")
   end
 
+  # GET /products/my_ads
+  def my_ads
+    @products = current_user.products.order("created_at desc")
+    render :index
+  end
+
   # GET /products/1 or /products/1.json
   def show
     # @product is already set by the set_product before_action
