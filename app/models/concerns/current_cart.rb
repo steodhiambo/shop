@@ -5,12 +5,12 @@ module CurrentCart
 
   def set_cart
     @cart = Cart.find(session[:cart_id]) if session[:cart_id]
-    
+
     if @cart.nil?
       @cart = Cart.create
       session[:cart_id] = @cart.id
     end
-    
+
     # If user is signed in and cart doesn't belong to user, assign it
     if user_signed_in? && @cart.user != current_user
       # If user already has a cart, merge the session cart into it
@@ -23,10 +23,12 @@ module CurrentCart
       end
       session[:cart_id] = @cart.id
     end
+
+    @cart
   end
 
   def current_cart
-    @cart ||= set_cart
+    @cart || set_cart
   end
 
   # Merge items from session cart into user cart

@@ -1,7 +1,7 @@
 class CartsController < ApplicationController
   include CurrentCart
   
-  before_action :set_cart, only: [:show, :destroy]
+  before_action :set_cart
   before_action :set_cart_item, only: [:add_item, :remove_item, :remove_all_of_item]
 
   # GET /cart
@@ -13,27 +13,27 @@ class CartsController < ApplicationController
   def add_item
     product = Product.find(params[:product_id])
     @cart.add_product(product)
-    
-    redirect_back(fallback_location: root_path)
+
     flash[:notice] = "Added to your cart"
+    redirect_back(fallback_location: root_path)
   end
 
   # DELETE /cart/remove_item
   def remove_item
     product = Product.find(params[:product_id])
     @cart.remove_product(product)
-    
-    redirect_back(fallback_location: cart_path)
+
     flash[:notice] = "Removed from your cart"
+    redirect_back(fallback_location: cart_path)
   end
 
   # DELETE /cart/remove_all_of_item
   def remove_all_of_item
     product = Product.find(params[:product_id])
     @cart.remove_all_of_product(product)
-    
-    redirect_back(fallback_location: cart_path)
+
     flash[:notice] = "Removed from your cart"
+    redirect_back(fallback_location: cart_path)
   end
 
   # DELETE /cart

@@ -14,7 +14,7 @@ class ProductsController < ApplicationController
 
   # GET /products/1 or /products/1.json
   def show
-    @products = Product.find(params[:id])
+    # @product is already set by the set_product before_action
   end
 
   def find_product_by_id(id)
