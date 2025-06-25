@@ -14,6 +14,16 @@ Rails.application.routes.draw do
     end
   end
 
+  # Ad routes
+  resources :ads do
+    collection do
+      get :my_ads
+    end
+    member do
+      post :toggle_active
+    end
+  end
+
   # Cart routes
   get 'cart', to: 'carts#show'
   post 'cart/add_item', to: 'carts#add_item'
