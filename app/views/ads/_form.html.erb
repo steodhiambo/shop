@@ -1,4 +1,6 @@
-<%= simple_form_for ad do |f| %>
+<div class="card">
+  <div class="card-content">
+    <%= simple_form_for ad do |f| %>
   <%= f.error_notification %>
   <% if ad.errors.any? %>
     <div class="notification is-danger">
@@ -12,7 +14,9 @@
   <% end %>
 
   <div class="field">
-    <label class="label">Select Product to Advertise</label>
+    <label class="label">
+      <i class="fas fa-box"></i> Select Product to Advertise
+    </label>
     <div class="control">
       <%= f.select :product_id, 
                    options_from_collection_for_select(@products, :id, :title, ad.product_id),
@@ -23,7 +27,9 @@
   </div>
 
   <div class="field">
-    <label class="label">Ad Title</label>
+    <label class="label">
+      <i class="fas fa-heading"></i> Ad Title
+    </label>
     <div class="control">
       <%= f.text_field :title, class: 'input', placeholder: 'e.g., "Amazing iPhone 13 - Like New!"' %>
     </div>
@@ -113,13 +119,19 @@
 
   <div class="field is-grouped">
     <div class="control">
-      <%= f.submit class: 'button is-primary' %>
+      <%= f.submit class: 'button is-primary is-medium' do %>
+        <i class="fas fa-save"></i> Save Ad
+      <% end %>
     </div>
     <div class="control">
-      <%= link_to 'Cancel', ads_path, class: 'button is-light' %>
+      <%= link_to ads_path, class: 'button is-light is-medium' do %>
+        <i class="fas fa-times"></i> Cancel
+      <% end %>
     </div>
   </div>
-<% end %>
+    <% end %>
+  </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

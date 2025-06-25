@@ -1,113 +1,191 @@
-<<% content_for :header do %>
+<% content_for :header do %>
 <section class="hero is-primary">
   <div class="hero-body">
     <div class="container">
-      <h1 class="title">
-        Welcome to Shop
-      </h1>
-      <h2 class="subtitle">
-        Your one-stop e-commerce destination
-      </h2>
-      <% unless user_signed_in? %>
-        <%= link_to "Get Started", new_user_registration_path, class: "button is-white is-large" %>
-      <% end %>
+      <div class="columns is-vcentered">
+        <div class="column is-6">
+          <h1 class="title is-1 has-text-white">
+            Welcome to Shop
+          </h1>
+          <h2 class="subtitle is-4 has-text-white">
+            Your premium e-commerce destination for quality products and amazing deals
+          </h2>
+          <div class="buttons">
+            <% unless user_signed_in? %>
+              <%= link_to "Get Started", new_user_registration_path, class: "button is-white is-large" %>
+              <%= link_to "Browse Ads", ads_path, class: "button is-light is-large" %>
+            <% else %>
+              <%= link_to "Create Ad", new_ad_path, class: "button is-warning is-large" %>
+              <%= link_to "Browse All Ads", ads_path, class: "button is-light is-large" %>
+            <% end %>
+          </div>
+        </div>
+        <div class="column is-6 has-text-centered">
+          <i class="fas fa-shopping-bag" style="font-size: 8rem; color: rgba(255,255,255,0.3);"></i>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 <% end %>
 
-<div class="section">
-  <div class="container">
-    <!-- Featured Ads Section -->
-    <% if @ads.any? %>
-      <h2 class="title is-3">Featured Ads</h2>
-      <div class="columns is-multiline mb-6">
+<!-- Featured Ads Section -->
+<% if @ads.any? %>
+  <section class="featured-ads">
+    <div class="container">
+      <div class="section-title">
+        <h2 class="title is-2 has-text-centered">Featured Ads</h2>
+        <p class="subtitle has-text-centered">Discover amazing products from our community</p>
+      </div>
+
+      <div class="columns is-multiline">
         <% @ads.each do |ad| %>
-          <div class="column is-one-quarter">
-            <div class="card">
-              <div class="card-image">
-                <figure class="image is-4by3">
-                  <% if ad.product.image.present? %>
-                    <%= link_to image_tag(ad.product.image_url(:thumb), alt: ad.title), ad %>
-                  <% else %>
-                    <%= link_to image_tag('default_product.svg', alt: ad.title), ad %>
+          <div class="column is-3">
+            <div class="ad-card">
+              <div class="ad-image">
+                <% if ad.product.image.present? %>
+                  <%= link_to ad do %>
+                    <%= image_tag(ad.product.image_url(:thumb), alt: ad.title) %>
                   <% end %>
-                </figure>
-              </div>
-              <div class="card-content">
-                <p class="title is-6"><%= link_to ad.title, ad %></p>
-                <p class="subtitle is-7">by <%= ad.user.name %></p>
-                <p class="has-text-weight-bold"><%= number_to_currency(ad.display_price) %></p>
-                <div class="is-size-7 has-text-grey">
-                  <%= pluralize(ad.views_count, 'view') %>
-                </div>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      </div>
-
-      <div class="has-text-centered mb-6">
-        <%= link_to "View All Ads", ads_path, class: "button is-primary" %>
-      </div>
-    <% end %>
-
-    <h2 class="title is-3">Latest Products</h2>
-
-    <% if @products.any? %>
-      <div class="product-index-grid pt4">
-        <% @products.each do |product| %>
-          <div class="product border-light">
-            <div class="product-thumb">
-              <% if product.image.present? %>
-                <%= link_to image_tag(product.image_url(:thumb)), product %>
-              <% else %>
-                <%= link_to image_tag('default_product.svg'), product %>
-              <% end %>
-              <% if product.condition? %>
-                <div class="condition">
-                  <span class="tag is-dark"><%= product.condition %></span>
-                </div>
-              <% end %>
-            </div>
-
-            <div class="pa3">
-              <h3 class="fw7 f4 title"><%= link_to product.title, product %></h3>
-              <p class="has-text-gray fg pt1">Sold by: <%= product_author(product) %></p>
-              <p class="f3 fw6 has-text-right pt2 price"><%= number_to_currency(product.price) %></p>
-
-              <div class="product-actions pt2">
-                <% if user_signed_in? && current_user == product.user %>
-                  <!-- User's own product - show edit/delete options -->
-                  <div class="buttons">
-                    <%= link_to "Edit Ad", edit_product_path(product), class: "button is-info is-small" %>
-                    <%= link_to "Delete Ad", product_path(product), method: :delete,
-                               confirm: "Are you sure you want to delete this ad?",
-                               class: "button is-danger is-small" %>
-                  </div>
                 <% else %>
-                  <!-- Other user's product - show add to cart -->
-                  <%= form_with url: cart_add_item_path, method: :post, local: true do |form| %>
-                    <%= form.hidden_field :product_id, value: product.id %>
-                    <%= form.submit "Add to Cart", class: "button is-primary is-small" %>
+                  <%= link_to ad do %>
+                    <div class="no-image-placeholder">
+                      <i class="fas fa-image"></i>
+                      <div>No Image Available</div>
+                    </div>
                   <% end %>
                 <% end %>
               </div>
+
+              <div class="ad-content">
+                <h3 class="ad-title">
+                  <%= link_to ad.title, ad %>
+                </h3>
+                <p class="ad-seller">
+                  <i class="fas fa-user"></i> by <%= ad.user.name %>
+                </p>
+                <div class="ad-price">
+                  <%= number_to_currency(ad.display_price) %>
+                </div>
+                <div class="ad-meta">
+                  <span><i class="fas fa-eye"></i> <%= pluralize(ad.views_count, 'view') %></span>
+                  <span><i class="fas fa-clock"></i> <%= time_ago_in_words(ad.created_at) %> ago</span>
+                </div>
+              </div>
             </div>
           </div>
         <% end %>
       </div>
 
-      <div class="has-text-centered pt4">
+      <div class="has-text-centered" style="margin-top: 3rem;">
+        <%= link_to "View All Ads", ads_path, class: "button is-primary is-large" %>
+      </div>
+    </div>
+  </section>
+<% else %>
+  <section class="featured-ads">
+    <div class="container">
+      <div class="section-title">
+        <h2 class="title is-2 has-text-centered">No Ads Yet</h2>
+        <p class="subtitle has-text-centered">Be the first to create an amazing ad!</p>
+        <div class="has-text-centered">
+          <% if user_signed_in? %>
+            <%= link_to "Create First Ad", new_ad_path, class: "button is-primary is-large" %>
+          <% else %>
+            <%= link_to "Sign Up to Create Ads", new_user_registration_path, class: "button is-primary is-large" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </section>
+<% end %>
+
+<div class="section">
+  <div class="container">
+
+    <div class="section-title">
+      <h2 class="title is-2 has-text-centered">Latest Products</h2>
+      <p class="subtitle has-text-centered">Browse our newest product listings</p>
+    </div>
+
+    <% if @products.any? %>
+      <div class="columns is-multiline">
+        <% @products.each do |product| %>
+          <div class="column is-3">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-4by3">
+                  <% if product.image.present? %>
+                    <%= link_to image_tag(product.image_url(:thumb), alt: product.title), product %>
+                  <% else %>
+                    <%= link_to product do %>
+                      <div class="no-image-placeholder" style="height: 200px; display: flex; align-items: center; justify-content: center; background: #f1f5f9;">
+                        <div style="text-align: center; color: #64748b;">
+                          <i class="fas fa-box" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                          <div>No Image Available</div>
+                        </div>
+                      </div>
+                    <% end %>
+                  <% end %>
+                  <% if product.condition? %>
+                    <div style="position: absolute; top: 10px; right: 10px;">
+                      <span class="tag is-primary"><%= product.condition %></span>
+                    </div>
+                  <% end %>
+                </figure>
+              </div>
+
+              <div class="card-content">
+                <h3 class="title is-5">
+                  <%= link_to product.title, product, style: "color: inherit; text-decoration: none;" %>
+                </h3>
+                <p class="subtitle is-6" style="color: #64748b;">
+                  <i class="fas fa-user"></i> Sold by: <%= product_author(product) %>
+                </p>
+                <p class="title is-4" style="color: #2563eb; margin-bottom: 1rem;">
+                  <%= number_to_currency(product.price) %>
+                </p>
+
+                <div class="buttons">
+                  <% if user_signed_in? && current_user == product.user %>
+                    <!-- User's own product - show edit/delete options -->
+                    <%= link_to edit_product_path(product), class: "button is-info is-small" do %>
+                      <i class="fas fa-edit"></i> Edit
+                    <% end %>
+                    <%= link_to product_path(product), method: :delete,
+                               confirm: "Are you sure you want to delete this product?",
+                               class: "button is-danger is-small" do %>
+                      <i class="fas fa-trash"></i> Delete
+                    <% end %>
+                  <% else %>
+                    <!-- Other user's product - show add to cart -->
+                    <%= form_with url: cart_add_item_path, method: :post, local: true do |form| %>
+                      <%= form.hidden_field :product_id, value: product.id %>
+                      <%= form.submit class: "button is-primary is-small" do %>
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="has-text-centered" style="margin-top: 3rem;">
         <%= link_to "View All Products", products_path, class: "button is-primary is-large" %>
       </div>
     <% else %>
-      <div class="has-text-centered">
+      <div class="has-text-centered" style="padding: 4rem 0;">
+        <i class="fas fa-box-open" style="font-size: 4rem; color: #64748b; margin-bottom: 1rem;"></i>
         <p class="title is-4">No products available yet</p>
         <% if user_signed_in? %>
-          <p class="subtitle">Be the first to <%= link_to "sell something", new_product_path %>!</p>
+          <p class="subtitle">Be the first to add a product!</p>
+          <%= link_to "Add Product", new_product_path, class: "button is-primary is-large" %>
         <% else %>
-          <p class="subtitle"><%= link_to "Sign up", new_user_registration_path %> to start selling!</p>
+          <p class="subtitle">Sign up to start selling!</p>
+          <%= link_to "Sign Up", new_user_registration_path, class: "button is-primary is-large" %>
         <% end %>
       </div>
     <% end %>
