@@ -5,7 +5,11 @@
         <div class="card">
           <div class="card-image">
             <figure class="image">
-              <%= image_tag(@product.image_url(:default), alt: @ad.title) %>
+              <% if @product.image.present? %>
+                <%= image_tag(@product.image_url(:thumb), alt: @product.title) %>
+              <% else %>
+                <%= image_tag('default_product.svg', alt: @product.title) %>
+              <% end %>
             </figure>
           </div>
           
@@ -108,7 +112,11 @@
                 <div class="media">
                   <div class="media-left">
                     <figure class="image is-48x48">
-                      <%= link_to image_tag(other_ad.product.image_url(:thumb)), other_ad %>
+                      <% if other_ad.product.image.present? %>
+                        <%= link_to image_tag(other_ad.product.image_url(:thumb)), other_ad %>
+                      <% else %>
+                        <%= link_to image_tag('default_product.svg'), other_ad %>
+                      <% end %>
                     </figure>
                   </div>
                   <div class="media-content">

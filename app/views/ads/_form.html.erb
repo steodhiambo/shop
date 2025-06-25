@@ -1,5 +1,15 @@
 <%= simple_form_for ad do |f| %>
   <%= f.error_notification %>
+  <% if ad.errors.any? %>
+    <div class="notification is-danger">
+      <strong>There were errors with your submission:</strong>
+      <ul>
+        <% ad.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
 
   <div class="field">
     <label class="label">Select Product to Advertise</label>
@@ -43,8 +53,15 @@
       <div class="field">
         <label class="label">Asking Price</label>
         <div class="control has-icons-left">
-          <%= f.number_field :asking_price, class: 'input', step: 0.01, min: 0,
-                             placeholder: 'Override product price if needed' %>
+          <%= f.number_field :asking_price, class: 'input', step: 0.01, min: 0.01,
+                             placeholder: 'Override product price if needed',
+                             required: true %>
+          <span class="icon is-small is-left">
+            <i class="fas fa-dollar-sign"></i>
+          </span>
+          <p class="help is-danger" style="display: none;" id="asking_price_error">
+            Please enter a valid price greater than 0
+          </p>
           <span class="icon is-small is-left">
             <i class="fas fa-dollar-sign"></i>
           </span>

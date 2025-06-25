@@ -27,7 +27,11 @@
             <div class="card">
               <div class="card-image">
                 <figure class="image is-4by3">
-                  <%= link_to image_tag(ad.product.image_url(:thumb), alt: ad.title), ad %>
+                  <% if ad.product.image.present? %>
+                    <%= link_to image_tag(ad.product.image_url(:thumb), alt: ad.title), ad %>
+                  <% else %>
+                    <%= link_to image_tag('default_product.svg', alt: ad.title), ad %>
+                  <% end %>
                 </figure>
               </div>
               <div class="card-content">
@@ -55,7 +59,11 @@
         <% @products.each do |product| %>
           <div class="product border-light">
             <div class="product-thumb">
-              <%= link_to image_tag(product.image_url(:thumb)), product %>
+              <% if product.image.present? %>
+                <%= link_to image_tag(product.image_url(:thumb)), product %>
+              <% else %>
+                <%= link_to image_tag('default_product.svg'), product %>
+              <% end %>
               <% if product.condition? %>
                 <div class="condition">
                   <span class="tag is-dark"><%= product.condition %></span>
