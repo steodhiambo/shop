@@ -18,6 +18,36 @@
 
 <div class="section">
   <div class="container">
+    <!-- Featured Ads Section -->
+    <% if @ads.any? %>
+      <h2 class="title is-3">Featured Ads</h2>
+      <div class="columns is-multiline mb-6">
+        <% @ads.each do |ad| %>
+          <div class="column is-one-quarter">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-4by3">
+                  <%= link_to image_tag(ad.product.image_url(:thumb), alt: ad.title), ad %>
+                </figure>
+              </div>
+              <div class="card-content">
+                <p class="title is-6"><%= link_to ad.title, ad %></p>
+                <p class="subtitle is-7">by <%= ad.user.name %></p>
+                <p class="has-text-weight-bold"><%= number_to_currency(ad.display_price) %></p>
+                <div class="is-size-7 has-text-grey">
+                  <%= pluralize(ad.views_count, 'view') %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="has-text-centered mb-6">
+        <%= link_to "View All Ads", ads_path, class: "button is-primary" %>
+      </div>
+    <% end %>
+
     <h2 class="title is-3">Latest Products</h2>
 
     <% if @products.any? %>
