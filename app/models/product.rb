@@ -2,6 +2,7 @@ class Product < ApplicationRecord
   belongs_to :user, optional: true
   has_many :cart_items, dependent: :destroy
   has_many :carts, through: :cart_items
+  has_many :ads, dependent: :destroy
 
   mount_uploader :image, ImageUploader
   serialize :image, JSON # If you use SQLite, add this line
