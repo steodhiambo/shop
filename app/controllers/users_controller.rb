@@ -4,7 +4,10 @@ class UsersController < ApplicationController
   def dashboard
     @user = current_user
     @products = current_user.products.order("created_at desc")
-    @total_ads = @products.count
-    @recent_ads = @products.limit(5)
+    @ads = current_user.ads.includes(:product).order("created_at desc")
+    @total_products = @products.count
+    @total_ads = @ads.count
+    @recent_products = @products.limit(3)
+    @recent_ads = @ads.limit(5)
   end
 end
