@@ -55,8 +55,9 @@
             </div>
 
             <% if user_signed_in? %>
-              <%= link_to 'Sell', new_product_path, class: "navbar-item button is-dark" %>
-              <%= link_to 'My Ads', my_ads_products_path, class: "navbar-item button is-light" %>
+              <%= link_to 'Sell Product', new_product_path, class: "navbar-item button is-dark" %>
+              <%= link_to 'Create Ad', new_ad_path, class: "navbar-item button is-primary" %>
+              <%= link_to 'My Ads', my_ads_ads_path, class: "navbar-item button is-light" %>
 
               <div class="navbar-item has-dropdown is-hoverable">
                 <%= link_to 'Account', edit_user_registration_path, class: "navbar-link" %>
