@@ -31,70 +31,112 @@
       <p class="alert"><%= alert %></p>
     </div>
     <% end %>
-     <nav class="navbar" role="navigation" aria-label="main navigation">
+     <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,0.1); box-shadow: 0 2px 20px rgba(0,0,0,0.1); z-index: 1000;">
       <div class="navbar-brand">
-        <%= link_to root_path, class:"navbar-item" do %>
-          <h1 class="title is-4 has-text-white">
-            <i class="fas fa-shopping-bag"></i> Shop
+        <%= link_to root_path, class:"navbar-item", style: "padding: 1rem 1.5rem;" do %>
+          <h1 class="title is-4" style="color: #2d3748; font-weight: 700; margin: 0;">
+            <i class="fas fa-shopping-bag" style="color: #667eea; margin-right: 0.5rem;"></i> Shop
           </h1>
         <% end  %>
-      <div class="navbar-burger burger" data-target="navbar">
-        <span></span>
-        <span></span>
-        <span></span>
+        <div class="navbar-burger burger" data-target="navbar" style="color: #2d3748;">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
-    </div>
 
       <div id="navbar" class="navbar-menu">
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <div class="field is-grouped">
+        <div class="navbar-end" style="align-items: center;">
 
-            <!-- Cart Icon -->
-            <div class="navbar-item">
-              <%= link_to cart_path, class: "button is-light" do %>
-                <i class="fas fa-shopping-cart"></i> Cart
-                <span class="tag is-warning ml-1">
-                  <% if defined?(@cart) && @cart %>
-                    <%= @cart.total_items %>
-                  <% else %>
-                    0
-                  <% end %>
-                </span>
-              <% end %>
+          <!-- Cart Icon -->
+          <%= link_to cart_path, class: "navbar-item", style: "padding: 0.5rem 1rem; margin-right: 0.5rem;" do %>
+            <div style="position: relative; display: flex; align-items: center; background: #f8fafc; padding: 0.5rem 1rem; border-radius: 25px; transition: all 0.3s ease;">
+              <i class="fas fa-shopping-cart" style="color: #667eea; margin-right: 0.5rem;"></i>
+              <span style="color: #2d3748; font-weight: 500;">Cart</span>
+              <span style="background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; margin-left: 0.5rem;">
+                <% if defined?(@cart) && @cart %>
+                  <%= @cart.total_items %>
+                <% else %>
+                  0
+                <% end %>
+              </span>
             </div>
+          <% end %>
 
-            <% if user_signed_in? %>
-              <%= link_to new_product_path, class: "navbar-item button is-info" do %>
-                <i class="fas fa-plus"></i> Sell Product
-              <% end %>
-              <%= link_to new_ad_path, class: "navbar-item button is-warning" do %>
-                <i class="fas fa-bullhorn"></i> Create Ad
-              <% end %>
-              <%= link_to my_ads_ads_path, class: "navbar-item button is-light" do %>
-                <i class="fas fa-list"></i> My Ads
-              <% end %>
-
-              <div class="navbar-item has-dropdown is-hoverable">
-                <%= link_to 'Account', edit_user_registration_path, class: "navbar-link" %>
-                <div class="navbar-dropdown is-right">
-                  <%= link_to "Dashboard", dashboard_path, class:"navbar-item" %>
-                  <%= link_to current_user.name, edit_user_registration_path, class:"navbar-item" %>
-                  <%= button_to "Log Out", destroy_user_session_path, method: :delete, class:"navbar-item button is-text", style: "border: none; background: none; padding: 0.5rem 0.75rem;" %>
-                </div>
+          <% if user_signed_in? %>
+            <%= link_to new_product_path, class: "navbar-item", style: "padding: 0.5rem;" do %>
+              <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.5rem 1.5rem; border-radius: 25px; font-weight: 500; transition: all 0.3s ease; margin-right: 0.5rem;">
+                <i class="fas fa-plus" style="margin-right: 0.5rem;"></i>Sell Product
               </div>
-            <% else %>
-
-            <%= link_to "Sign In", new_user_session_path, class:"navbar-item button is-warning" %>
-            <%= link_to "Sign up", new_user_registration_path, class:"navbar-item button is-warning"%>
-
             <% end %>
 
+            <%= link_to new_ad_path, class: "navbar-item", style: "padding: 0.5rem;" do %>
+              <div style="background: #f59e0b; color: white; padding: 0.5rem 1.5rem; border-radius: 25px; font-weight: 500; transition: all 0.3s ease; margin-right: 0.5rem;">
+                <i class="fas fa-bullhorn" style="margin-right: 0.5rem;"></i>Create Ad
+              </div>
+            <% end %>
+
+            <div class="navbar-item has-dropdown is-hoverable" style="padding: 0.5rem;">
+              <a class="navbar-link" style="background: #f8fafc; border-radius: 25px; padding: 0.5rem 1rem; border: none; color: #2d3748; font-weight: 500;">
+                <i class="fas fa-user" style="margin-right: 0.5rem;"></i><%= current_user.name %>
+              </a>
+              <div class="navbar-dropdown is-right" style="border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); border: none; margin-top: 0.5rem;">
+                <%= link_to dashboard_path, class:"navbar-item", style: "padding: 0.75rem 1.5rem; color: #2d3748;" do %>
+                  <i class="fas fa-tachometer-alt" style="margin-right: 0.5rem; color: #667eea;"></i>Dashboard
+                <% end %>
+                <%= link_to my_ads_ads_path, class:"navbar-item", style: "padding: 0.75rem 1.5rem; color: #2d3748;" do %>
+                  <i class="fas fa-list" style="margin-right: 0.5rem; color: #667eea;"></i>My Ads
+                <% end %>
+                <%= link_to edit_user_registration_path, class:"navbar-item", style: "padding: 0.75rem 1.5rem; color: #2d3748;" do %>
+                  <i class="fas fa-cog" style="margin-right: 0.5rem; color: #667eea;"></i>Settings
+                <% end %>
+                <hr class="navbar-divider" style="margin: 0.5rem 0;">
+                <%= button_to destroy_user_session_path, method: :delete, class:"navbar-item", style: "border: none; background: none; padding: 0.75rem 1.5rem; width: 100%; text-align: left; color: #ef4444;" do %>
+                  <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i>Log Out
+                <% end %>
+              </div>
             </div>
-          </div>
+          <% else %>
+            <%= link_to new_user_session_path, class:"navbar-item", style: "padding: 0.5rem;" do %>
+              <div style="background: #f8fafc; color: #2d3748; padding: 0.5rem 1.5rem; border-radius: 25px; font-weight: 500; transition: all 0.3s ease; margin-right: 0.5rem;">
+                <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>Sign In
+              </div>
+            <% end %>
+
+            <%= link_to new_user_registration_path, class:"navbar-item", style: "padding: 0.5rem;" do %>
+              <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.5rem 1.5rem; border-radius: 25px; font-weight: 500; transition: all 0.3s ease;">
+                <i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>Sign Up
+              </div>
+            <% end %>
+          <% end %>
         </div>
-    </div>
-  </nav>
+      </div>
+    </nav>
+
+    <!-- Add padding to body to account for fixed navbar -->
+    <style>
+      body { padding-top: 70px; }
+
+      .navbar-item:hover > div {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      }
+
+      .navbar-dropdown {
+        animation: fadeInDown 0.3s ease;
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
 
   <%= yield(:header) %>
 
