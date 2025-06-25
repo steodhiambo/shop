@@ -1,0 +1,108 @@
+<% content_for :header do %>
+<section class="hero is-info">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        <%= params[:action] == 'my_ads' ? 'My Ads' : 'All Ads' %>
+      </h1>
+      <h2 class="subtitle">
+        <%= params[:action] == 'my_ads' ? 'Manage your promotional ads' : 'Browse promotional ads from sellers' %>
+      </h2>
+    </div>
+  </div>
+</section>
+<% end %>
+
+<div class="section">
+  <div class="container">
+    <% if params[:action] == 'my_ads' %>
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <p class="subtitle is-5">
+              <strong><%= @ads.count %></strong> ads
+            </p>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <%= link_to "Create New Ad", new_ad_path, class: "button is-primary" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @ads.any? %>
+      <div class="columns is-multiline">
+        <% @ads.each do |ad| %>
+          <div class="column is-one-third">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-4by3">
+                  <%= link_to image_tag(ad.product.image_url(:thumb), alt: ad.title), ad %>
+                </figure>
+              </div>
+              
+              <div class="card-content">
+                <div class="media">
+                  <div class="media-content">
+                    <p class="title is-5"><%= link_to ad.title, ad %></p>
+                    <p class="subtitle is-6">
+                      Product: <%= ad.product.title %>
+                      <br>
+                      By: <%= ad.user.name %>
+                    </p>
+                  </div>
+                </div>
+
+                <div class="content">
+                  <p><%= truncate(ad.description, length: 100) %></p>
+                  
+                  <div class="tags has-addons">
+                    <span class="tag">Price</span>
+                    <span class="tag is-primary"><%= number_to_currency(ad.display_price) %></span>
+                  </div>
+                  
+                  <% unless ad.active? %>
+                    <span class="tag is-warning">Inactive</span>
+                  <% end %>
+                  
+                  <% if ad.expired? %>
+                    <span class="tag is-danger">Expired</span>
+                  <% end %>
+                  
+                  <div class="is-size-7 has-text-grey">
+                    <%= pluralize(ad.views_count, 'view') %> • 
+                    <%= time_ago_in_words(ad.created_at) %> ago
+                  </div>
+                </div>
+              </div>
+              
+              <% if params[:action] == 'my_ads' && user_signed_in? && current_user == ad.user %>
+                <footer class="card-footer">
+                  <%= link_to "View", ad, class: "card-footer-item" %>
+                  <%= link_to "Edit", edit_ad_path(ad), class: "card-footer-item" %>
+                  <%= link_to "Delete", ad, method: :delete, 
+                             confirm: "Are you sure?", class: "card-footer-item has-text-danger" %>
+                  <%= link_to ad.active? ? "Deactivate" : "Activate", 
+                             toggle_active_ad_path(ad), method: :post, 
+                             class: "card-footer-item #{'has-text-warning' unless ad.active?}" %>
+                </footer>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="has-text-centered">
+        <p class="title is-4">
+          <%= params[:action] == 'my_ads' ? 'No ads created yet' : 'No ads available' %>
+        </p>
+        <% if params[:action] == 'my_ads' %>
+          <p class="subtitle">Create your first ad to start promoting your products!</p>
+          <%= link_to "Create Ad", new_ad_path, class: "button is-primary is-large" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

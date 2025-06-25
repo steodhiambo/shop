@@ -1,0 +1,130 @@
+<div class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-8">
+        <div class="card">
+          <div class="card-image">
+            <figure class="image">
+              <%= image_tag(@product.image_url(:default), alt: @ad.title) %>
+            </figure>
+          </div>
+          
+          <div class="card-content">
+            <h1 class="title is-2"><%= @ad.title %></h1>
+            
+            <div class="content">
+              <div class="notification is-info is-light">
+                <h3 class="title is-4">About this Product</h3>
+                <p><strong>Product:</strong> <%= @product.title %></p>
+                <p><strong>Brand:</strong> <%= @product.brand %></p>
+                <p><strong>Model:</strong> <%= @product.model %></p>
+                <p><strong>Condition:</strong> <%= @product.condition %></p>
+                <% if @product.finish.present? %>
+                  <p><strong>Color:</strong> <%= @product.finish %></p>
+                <% end %>
+              </div>
+
+              <h3 class="title is-4">Description</h3>
+              <p><%= simple_format(@ad.description) %></p>
+
+              <% if @ad.promotional_text.present? %>
+                <div class="notification is-warning is-light">
+                  <h4 class="title is-5">Special Offer</h4>
+                  <p><%= simple_format(@ad.promotional_text) %></p>
+                </div>
+              <% end %>
+
+              <h3 class="title is-4">Product Details</h3>
+              <p><%= simple_format(@product.description) %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="column is-4">
+        <div class="card">
+          <div class="card-content">
+            <h2 class="title is-3 has-text-centered">
+              <%= number_to_currency(@ad.display_price) %>
+            </h2>
+            
+            <div class="content">
+              <p><strong>Seller:</strong> <%= @ad.user.name %></p>
+              <p><strong>Contact:</strong> <%= @ad.contact_display %></p>
+              <p><strong>Views:</strong> <%= pluralize(@ad.views_count, 'view') %></p>
+              <p><strong>Posted:</strong> <%= time_ago_in_words(@ad.created_at) %> ago</p>
+              
+              <% if @ad.expires_at.present? %>
+                <p><strong>Expires:</strong> <%= @ad.expires_at.strftime("%B %d, %Y") %></p>
+              <% end %>
+            </div>
+
+            <% if user_signed_in? && current_user == @ad.user %>
+              <!-- Owner view -->
+              <div class="notification is-info is-light">
+                <p class="has-text-weight-bold">This is your ad</p>
+                <p class="is-size-7">Status: 
+                  <span class="tag <%= @ad.active? ? 'is-success' : 'is-warning' %>">
+                    <%= @ad.active? ? 'Active' : 'Inactive' %>
+                  </span>
+                </p>
+              </div>
+              
+              <div class="buttons">
+                <%= link_to "Edit Ad", edit_ad_path(@ad), class: "button is-info is-fullwidth" %>
+                <%= link_to "Delete Ad", @ad, method: :delete, 
+                           confirm: "Are you sure?", class: "button is-danger is-fullwidth" %>
+                <%= link_to @ad.active? ? "Deactivate" : "Activate", 
+                           toggle_active_ad_path(@ad), method: :post, 
+                           class: "button #{'is-warning' if @ad.active?} #{'is-success' unless @ad.active?} is-fullwidth" %>
+              </div>
+              
+              <div class="mt-3">
+                <%= link_to "View All My Ads", my_ads_ads_path, class: "button is-light is-fullwidth" %>
+              </div>
+            <% else %>
+              <!-- Buyer view -->
+              <div class="buttons">
+                <%= form_with url: cart_add_item_path, method: :post, local: true do |form| %>
+                  <%= form.hidden_field :product_id, value: @product.id %>
+                  <%= form.submit "Add to Cart", class: "button is-primary is-large is-fullwidth" %>
+                <% end %>
+              </div>
+              
+              <div class="content is-small has-text-grey">
+                <p>Contact the seller using the information above to arrange purchase or ask questions.</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        
+        <!-- Related ads from same seller -->
+        <% other_ads = @ad.user.ads.active.not_expired.where.not(id: @ad.id).limit(3) %>
+        <% if other_ads.any? %>
+          <div class="card mt-4">
+            <div class="card-content">
+              <h4 class="title is-5">More from <%= @ad.user.name %></h4>
+              <% other_ads.each do |other_ad| %>
+                <div class="media">
+                  <div class="media-left">
+                    <figure class="image is-48x48">
+                      <%= link_to image_tag(other_ad.product.image_url(:thumb)), other_ad %>
+                    </figure>
+                  </div>
+                  <div class="media-content">
+                    <p class="is-size-6">
+                      <%= link_to other_ad.title, other_ad %>
+                    </p>
+                    <p class="is-size-7 has-text-grey">
+                      <%= number_to_currency(other_ad.display_price) %>
+                    </p>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
