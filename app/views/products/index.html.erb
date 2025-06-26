@@ -15,7 +15,11 @@
 
     <div class="product border-light">
       <div class="product-thumb">
-      <%= link_to image_tag(product.image_url(:thumb)), product %>
+      <% if product.image.present? %>
+        <%= link_to image_tag(product.image_url(:thumb)), product %>
+      <% else %>
+        <%= link_to image_tag('default_product.svg'), product %>
+      <% end %>
       <% if product.condition? %>
         <div class="condition">
           <span class="tag is-dark"><%= product.condition %></span>
@@ -33,14 +37,24 @@
       <p class="f3 fw6 has-text-right pt2 price"><%= number_to_currency(product.price) %></p>
 
       <div class="product-actions pt2">
-        <%= form_with url: cart_add_item_path, method: :post, local: true do |form| %>
-          <%= form.hidden_field :product_id, value: product.id %>
-          <%= form.submit "Add to Cart", class: "button is-primary is-small" %>
-        <% end %>
-
-        <% if can_edit_product?(product) %>
-          <%= link_to 'Edit', edit_product_path(product), class: "button is-info is-small" %>
-          <%= link_to 'Delete', product, data: { confirm: "Are you sure ?" }, :method => :delete, class: "button is-danger is-small" %>
+        <% if user_signed_in? && current_user == product.user %>
+          <!-- User's own product - show edit/delete options -->
+          <div class="buttons">
+            <%= link_to edit_product_path(product), class: "button is-info is-small" do %>
+              <i class="fas fa-edit"></i> Edit Product
+            <% end %>
+            <%= link_to product, data: { confirm: "Are you sure you want to delete this product?" },
+                       method: :delete, class: "button is-danger is-small" do %>
+              <i class="fas fa-trash"></i> Delete Product
+            <% end %>
+          </div>
+          <p class="has-text-grey is-size-7 mt-1">Your Product</p>
+        <% else %>
+          <!-- Other user's product - show add to cart -->
+          <%= form_with url: cart_add_item_path, method: :post, local: true do |form| %>
+            <%= form.hidden_field :product_id, value: product.id %>
+            <%= form.submit "Add to Cart", class: "button is-primary is-small" %>
+          <% end %>
         <% end %>
       </div>
 

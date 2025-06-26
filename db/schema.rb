@@ -10,7 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_06_131431) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_25_000001) do
+  create_table "ads", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.text "promotional_text"
+    t.decimal "asking_price", precision: 10, scale: 2
+    t.boolean "active", default: true
+    t.datetime "expires_at"
+    t.string "contact_method"
+    t.string "contact_info"
+    t.integer "views_count", default: 0
+    t.integer "product_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_ads_on_active"
+    t.index ["expires_at"], name: "index_ads_on_expires_at"
+    t.index ["product_id"], name: "index_ads_on_product_id"
+    t.index ["user_id", "created_at"], name: "index_ads_on_user_id_and_created_at"
+    t.index ["user_id"], name: "index_ads_on_user_id"
+  end
+
   create_table "cart_items", force: :cascade do |t|
     t.integer "cart_id", null: false
     t.integer "product_id", null: false
@@ -71,6 +92,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_06_131431) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "ads", "products"
+  add_foreign_key "ads", "users"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "users"

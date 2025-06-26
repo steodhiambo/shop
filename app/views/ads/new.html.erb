@@ -1,0 +1,24 @@
+<% content_for :header do %>
+<section class="hero is-primary">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        Create New Ad
+      </h1>
+      <h2 class="subtitle">
+        Promote your product to potential buyers
+      </h2>
+    </div>
+  </div>
+</section>
+<% end %>
+
+<div class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-8 is-offset-2">
+        <%= render 'form', ad: @ad %>
+      </div>
+    </div>
+  </div>
+</div>

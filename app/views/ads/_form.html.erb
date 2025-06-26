@@ -1,0 +1,151 @@
+<div class="card">
+  <div class="card-content">
+    <%= simple_form_for ad do |f| %>
+  <%= f.error_notification %>
+  <% if ad.errors.any? %>
+    <div class="notification is-danger">
+      <strong>There were errors with your submission:</strong>
+      <ul>
+        <% ad.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <label class="label">
+      <i class="fas fa-box"></i> Select Product to Advertise
+    </label>
+    <div class="control">
+      <%= f.select :product_id, 
+                   options_from_collection_for_select(@products, :id, :title, ad.product_id),
+                   { prompt: 'Choose a product...' },
+                   { class: 'select is-fullwidth' } %>
+    </div>
+    <p class="help">Select which of your products this ad will promote</p>
+  </div>
+
+  <div class="field">
+    <label class="label">
+      <i class="fas fa-heading"></i> Ad Title
+    </label>
+    <div class="control">
+      <%= f.text_field :title, class: 'input', placeholder: 'e.g., "Amazing iPhone 13 - Like New!"' %>
+    </div>
+    <p class="help">Create an eye-catching title for your ad</p>
+  </div>
+
+  <div class="field">
+    <label class="label">Ad Description</label>
+    <div class="control">
+      <%= f.text_area :description, class: 'textarea', rows: 4, 
+                      placeholder: 'Describe why buyers should choose your product...' %>
+    </div>
+    <p class="help">Detailed description of your product and why it's great</p>
+  </div>
+
+  <div class="field">
+    <label class="label">Promotional Text</label>
+    <div class="control">
+      <%= f.text_area :promotional_text, class: 'textarea', rows: 3, 
+                      placeholder: 'Special offers, urgency, unique selling points...' %>
+    </div>
+    <p class="help">Special promotional content (e.g., "Limited time offer!", "Must sell this week!")</p>
+  </div>
+
+  <div class="columns">
+    <div class="column">
+      <div class="field">
+        <label class="label">Asking Price</label>
+        <div class="control has-icons-left">
+          <%= f.number_field :asking_price, class: 'input', step: 0.01, min: 0.01,
+                             placeholder: 'Override product price if needed',
+                             required: true %>
+          <span class="icon is-small is-left">
+            <i class="fas fa-dollar-sign"></i>
+          </span>
+          <p class="help is-danger" style="display: none;" id="asking_price_error">
+            Please enter a valid price greater than 0
+          </p>
+          <span class="icon is-small is-left">
+            <i class="fas fa-dollar-sign"></i>
+          </span>
+        </div>
+        <p class="help">Leave blank to use product price, or set a different price for this ad</p>
+      </div>
+    </div>
+    
+    <div class="column">
+      <div class="field">
+        <label class="label">Contact Method</label>
+        <div class="control">
+          <%= f.select :contact_method, 
+                       options_for_select([
+                         ['Email only', 'email'],
+                         ['Phone only', 'phone'], 
+                         ['Both email and phone', 'both']
+                       ], ad.contact_method),
+                       { prompt: 'How should buyers contact you?' },
+                       { class: 'select is-fullwidth' } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field" id="phone-field" style="<%= 'display: none;' unless ['phone', 'both'].include?(ad.contact_method) %>">
+    <label class="label">Phone Number</label>
+    <div class="control">
+      <%= f.text_field :contact_info, class: 'input', placeholder: 'Your phone number' %>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Ad Expiration (Optional)</label>
+    <div class="control">
+      <%= f.datetime_local_field :expires_at, class: 'input' %>
+    </div>
+    <p class="help">Leave blank for no expiration, or set when this ad should automatically expire</p>
+  </div>
+
+  <div class="field">
+    <div class="control">
+      <label class="checkbox">
+        <%= f.check_box :active %>
+        Ad is active (visible to buyers)
+      </label>
+    </div>
+  </div>
+
+  <div class="field is-grouped">
+    <div class="control">
+      <%= f.submit class: 'button is-primary is-medium' do %>
+        <i class="fas fa-save"></i> Save Ad
+      <% end %>
+    </div>
+    <div class="control">
+      <%= link_to ads_path, class: 'button is-light is-medium' do %>
+        <i class="fas fa-times"></i> Cancel
+      <% end %>
+    </div>
+  </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const contactMethodSelect = document.querySelector('#ad_contact_method');
+  const phoneField = document.querySelector('#phone-field');
+  
+  if (contactMethodSelect && phoneField) {
+    contactMethodSelect.addEventListener('change', function() {
+      if (this.value === 'phone' || this.value === 'both') {
+        phoneField.style.display = 'block';
+      } else {
+        phoneField.style.display = 'none';
+      }
+    });
+  }
+});
+</script>
