@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.3.0'
+ruby '3.2.3'
 
 # Use latest stable Rails version
 gem 'rails', '~> 7.1.3'
 
-# Use sqlite3 as the database for Active Record
+# Use sqlite3 as the database for Active Record in both development and production
 gem 'sqlite3', '~> 1.4'
 
 # Use Puma as the app server
