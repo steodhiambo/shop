@@ -50,9 +50,10 @@ RUN apt-get update -qq && \
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
-# Run and own only the runtime files as a non-root user for security
-RUN useradd rails --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
+# Create necessary directories and set permissions
+RUN mkdir -p /rails/db /rails/log /rails/storage /rails/tmp && \
+    useradd rails --create-home --shell /bin/bash && \
+    chown -R rails:rails /rails/db /rails/log /rails/storage /rails/tmp
 USER rails:rails
 
 # Entrypoint prepares the database.
