@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.2.3'
+ruby '3.3.0'
 
 # Use latest stable Rails version
 gem 'rails', '~> 7.1.3'
