@@ -5,7 +5,9 @@ services:
     buildCommand: |
       bundle install &&
       bundle exec rake assets:precompile
-    startCommand: bundle exec puma -C config/puma.rb
+    startCommand: |
+      bundle exec rake db:migrate &&
+      bundle exec puma -C config/puma.rb
     envVars:
       - key: RAILS_ENV
         value: production
@@ -15,6 +17,7 @@ services:
         value: true
       - key: SECRET_KEY_BASE
         generateValue: true
+    healthCheckPath: /
     disk:
       name: sqlite-data
       mountPath: /rails/db
