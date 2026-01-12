@@ -2,34 +2,34 @@
 ## Overview
 Shop is a fully functional e-Commerce web application built using Ruby on Rails 7.1. Users can create accounts, post ads for selling products, manage a shopping cart, and complete purchases using Stripe payment processing. The application features user authentication with Devise, a robust shopping cart system with session persistence, and a complete payment workflow.
 
-## ✅ COMPLETED IMPLEMENTATION
+##  COMPLETED IMPLEMENTATION
 
 This implementation includes ALL the required features from the project specifications:
 
-### 🔐 User Authentication (Devise)
-- **✅ Registrations Controller**: Complete with `sign_up_params` and `account_update_params`
-- **✅ User Model**: Includes name field and proper validations
-- **✅ Authentication Views**: Sign up, sign in, edit profile pages
+###  User Authentication (Devise)
+- ** Registrations Controller**: Complete with `sign_up_params` and `account_update_params`
+- ** User Model**: Includes name field and proper validations
+- ** Authentication Views**: Sign up, sign in, edit profile pages
 
-### 🛍️ Product Management
-- **✅ Products Helper**: Shows seller names and restricts edit/delete to creators only
-- **✅ Product Model**: Full CRUD with brand, condition, color, price, description
-- **✅ Product Views**: Create, edit, view, and list products with image support
-- **✅ Image Upload**: CarrierWave integration with image processing
+###  Product Management
+- ** Products Helper**: Shows seller names and restricts edit/delete to creators only
+- ** Product Model**: Full CRUD with brand, condition, color, price, description
+- ** Product Views**: Create, edit, view, and list products with image support
+- ** Image Upload**: CarrierWave integration with image processing
 
-### 🛒 Shopping Cart System
-- **✅ Cart Model**: Add/remove items, calculate totals, empty cart functionality
-- **✅ Cart Items**: Individual item management with quantities
-- **✅ Current Cart Concern**: Session persistence for anonymous users
-- **✅ Cart Merging**: Seamless cart transfer when users sign in
-- **✅ Cart Icon**: Dynamic item count display in navigation
-- **✅ Flash Messages**: "Added to cart" / "Removed from cart" notifications
+###  Shopping Cart System
+- ** Cart Model**: Add/remove items, calculate totals, empty cart functionality
+- ** Cart Items**: Individual item management with quantities
+- ** Current Cart Concern**: Session persistence for anonymous users
+- ** Cart Merging**: Seamless cart transfer when users sign in
+- ** Cart Icon**: Dynamic item count display in navigation
+- ** Flash Messages**: "Added to cart" / "Removed from cart" notifications
 
-### 💳 Payment System (BONUS REQUIREMENT)
-- **✅ Stripe Integration**: Complete payment processing with Stripe
-- **✅ Payment Model**: Track payment status and history
-- **✅ Checkout Flow**: Secure payment form with card processing
-- **✅ Payment Confirmation**: Success pages and payment tracking
+###  Payment System (BONUS REQUIREMENT)
+- ** Stripe Integration**: Complete payment processing with Stripe
+- ** Payment Model**: Track payment status and history
+- ** Checkout Flow**: Secure payment form with card processing
+- ** Payment Confirmation**: Success pages and payment tracking
 
 ## Features
 - **User Authentication**: Users can sign up, sign in, and update their account details using Devise.
@@ -57,7 +57,7 @@ This implementation includes ALL the required features from the project specific
 ### Steps
 1. **Clone the Repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/steodhiambo/shop.git
    cd shop
    ```
 
@@ -179,4 +179,4 @@ To enhance the application, the following are implemented:
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ## Contact
-For questions or support, contact the project maintainer at moffatmokwa12@gmail.com
+For questions or support, contact the project maintainer at stephenoginga6@gmail.com
