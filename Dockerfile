@@ -52,11 +52,11 @@ COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
 # Create necessary directories and set permissions
-RUN mkdir -p /rails/db /rails/log /rails/storage /rails/tmp && \
+RUN mkdir -p /rails/db /rails/log /rails/storage /rails/tmp /rails/tmp/pids && \
     useradd rails --create-home --shell /bin/bash && \
     chown -R rails:rails /rails/db /rails/log /rails/storage /rails/tmp
 USER rails:rails
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+CMD ["bash", "/rails/bin/start_server.sh"]
